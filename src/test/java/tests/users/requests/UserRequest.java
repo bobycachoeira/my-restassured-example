@@ -2,10 +2,13 @@ package tests.users.requests;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import io.restassured.specification.FilterableRequestSpecification;
+import io.restassured.specification.RequestSpecification;
 import payloads.users.UsersPayload;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.reset;
+import static utils.RestAssuredAllureLogger.logRequestData;
 
 import org.apache.http.HttpStatus;
 
@@ -17,7 +20,7 @@ public class UserRequest {
 
     @Step("Listar usuários cadastrados")
     public Response listar() {
-        return given()
+        return  given()
                 .header("accept", "application/json")
                 .header("Content-Type", "application/json")
                 .when()
@@ -29,6 +32,7 @@ public class UserRequest {
         return given()
                 .header("accept", "application/json")
                 .header("Content-Type", "application/json")
+                .log().body()
                 .when()
                 .queryParam(queryParam, valueParam)
                 .get(PATH_USUARIOS);
