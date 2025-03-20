@@ -4,7 +4,7 @@ package tests.users.tests;
 import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
 import io.restassured.response.Response;
-import io.restassured.specification.FilterableRequestSpecification;
+
 import tests.base.tests.BaseTest;
 import tests.users.requests.UserRequest;
 
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static utils.RestAssuredAllureLogger.logRequestData;
 import static utils.RestAssuredAllureLogger.logResponseData;
 
 @Feature("Excluir usuários")
@@ -24,7 +23,7 @@ public class ExcluirUsuariosTest extends BaseTest {
     @Test
     @Tag("todos")
     @Description("Excluir um usuário administrador com sucesso.")
-    public void excluirUsuarioAdministradorComSucesso() throws Exception {
+    public void excluirUsuarioAdministradorComSucesso() {
         String idUsuario = usuarios.cadastrar(true)
                 .then()
                 .statusCode(HttpStatus.SC_CREATED)
@@ -33,18 +32,20 @@ public class ExcluirUsuariosTest extends BaseTest {
 
         Response response = usuarios.excluir(idUsuario)
                 .then()
-                .statusCode(HttpStatus.SC_OK)
-                .body("message", equalTo("Registro excluído com sucesso"))
+                .log().ifValidationFails()
                 .extract()
                 .response();
+                logResponseData(response);
 
-        logResponseData(response);
+                response.then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("message", equalTo("Registro excluído com sucesso"));
     }
 
     @Test
     @Tag("todos")
     @Description("Excluir um usuário não administrador com sucesso.")
-    public void excluirUsuarioNaoAdministradorComSucesso() throws Exception {
+    public void excluirUsuarioNaoAdministradorComSucesso() {
         String idUsuario = usuarios.cadastrar(true)
                 .then()
                 .log().ifValidationFails()
@@ -55,12 +56,13 @@ public class ExcluirUsuariosTest extends BaseTest {
         Response response = usuarios.excluir(idUsuario)
                 .then()
                 .log().ifValidationFails()
-                .statusCode(HttpStatus.SC_OK)
-                .body("message", equalTo("Registro excluído com sucesso"))
                 .extract()
                 .response();
+                logResponseData(response);
 
-        logResponseData(response);
+                response.then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("message", equalTo("Registro excluído com sucesso"));
     }
 
 }

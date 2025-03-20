@@ -5,7 +5,6 @@ import java.util.Locale;
 import com.github.javafaker.Faker;
 import org.junit.Assert;
 
-
 public class Utils {
 
     public static Faker faker = new Faker(new Locale("pt-BR"));
@@ -26,7 +25,7 @@ public class Utils {
                 baseUrl = "https://hml.serverest.dev";
                 break;
             case PRD:
-                baseUrl = "https://serverest.dev";
+                baseUrl = "https://serverest.prd";
                 break;
             default:
                 Assert.fail("Ambiente não configurado");

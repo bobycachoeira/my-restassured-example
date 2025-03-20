@@ -1,15 +1,10 @@
 package tests.base.tests;
 
-
-import io.qameta.allure.Allure;
-import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 // import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 // import utils.Utils;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import utils.Utils;
 
 import org.junit.jupiter.api.Assertions;
@@ -26,7 +21,7 @@ public class BaseTest {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
-     public static void validateStatusCode(Response response, int expectedStatusCode) {
+    public static void validateStatusCode(Response response, int expectedStatusCode) {
         Assertions.assertEquals(expectedStatusCode, response.getStatusCode());
     }
 

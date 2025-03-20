@@ -2,8 +2,6 @@ package tests.users.tests;
 
 import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import tests.base.tests.BaseTest;
@@ -12,7 +10,6 @@ import tests.users.requests.UserRequest;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import utils.RestAssuredAllureLogger;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,42 +26,50 @@ public class ListarUsuariosTest extends BaseTest {
         @Test
         @Tag("todos")
         @Description("Deve listar os usuários com sucesso.")
-        public void deveListarUsuariosComSucesso() throws Exception {
-            Response response = usuarios.listar()
+        public void deveListarUsuariosComSucesso() {
+                Response response = usuarios.listar()
                                 .then()
-                                .statusCode(HttpStatus.SC_OK)
-                                .time(lessThan(2L), TimeUnit.SECONDS)
+                                .log().ifValidationFails()
                                 .extract()
                                 .response();
                 logResponseData(response);
+
+                response.then()
+                                .statusCode(HttpStatus.SC_OK)
+                                .time(lessThan(2L), TimeUnit.SECONDS);
         }
 
         @Test
         @Tag("todos")
         @Description("Deve listar os usuários administradores com sucesso.")
-        public void deveListarUsuariosAdministradoresComSucesso() throws Exception {
-            Response response = usuarios.listar("administrador", "true")
+        public void deveListarUsuariosAdministradoresComSucesso() {
+                Response response = usuarios.listar("administrador", "true")
                                 .then()
-                                .statusCode(HttpStatus.SC_OK)
-                                .body("usuarios", hasItems(allOf(hasEntry("administrador", "true"))))
+                                .log().ifValidationFails()
                                 .extract()
                                 .response();
                 logResponseData(response);
+
+                response.then()
+                                .statusCode(HttpStatus.SC_OK)
+                                .body("usuarios", hasItems(allOf(hasEntry("administrador", "true"))));
 
         }
 
         @Test
         @Tag("todos")
         @Description("Deve listar os usuários não administradores com sucesso.")
-        public void deveListarUsuariosNaoAdministradoresComSucesso() throws Exception {
+        public void deveListarUsuariosNaoAdministradoresComSucesso() {
                 Response response = usuarios.listar("administrador", "false")
                                 .then()
-                                .statusCode(HttpStatus.SC_OK)
-                                .body("usuarios", hasItems(allOf(hasEntry("administrador", "false"))))
+                                .log().ifValidationFails()
                                 .extract()
                                 .response();
-
                 logResponseData(response);
+
+                response.then()
+                                .statusCode(HttpStatus.SC_OK)
+                                .body("usuarios", hasItems(allOf(hasEntry("administrador", "false"))));
 
         }
 
@@ -72,48 +77,51 @@ public class ListarUsuariosTest extends BaseTest {
         @Tag("todos")
         @Test
         @Description("Deve validar o schema json da lista de usuários")
-        public void deveValidarSchemaListaUsuarios() throws Exception {
+        public void deveValidarSchemaListaUsuarios() {
                 Response response = usuarios.listar()
                                 .then()
-                                .statusCode(HttpStatus.SC_OK)
-                                .body(matchesJsonSchemaInClasspath("schemas/users/users.json"))
+                                .log().ifValidationFails()
                                 .extract()
                                 .response();
-
                 logResponseData(response);
+
+                response.then()
+                                .statusCode(HttpStatus.SC_OK)
+                                .body(matchesJsonSchemaInClasspath("schemas/users/users.json"));
         }
 
         @Test
         @Tag("todos")
         @Description("Deve listar um usuário utilizando o ID")
-        public void deveListarUsuarioUtilizandoId() throws Exception {
+        public void deveListarUsuarioUtilizandoId() {
                 String idUsuario = usuarios.getIdPrimeiroUsuario();
                 Response response = usuarios.buscarPorId(idUsuario)
                                 .then()
                                 .log().ifValidationFails()
-                                .statusCode(HttpStatus.SC_OK)
-                                .time(lessThan(2L), TimeUnit.SECONDS)
                                 .extract()
                                 .response();
-
                 logResponseData(response);
+
+                response.then()
+                                .statusCode(HttpStatus.SC_OK)
+                                .time(lessThan(2L), TimeUnit.SECONDS);
         }
 
         @Tag("schemas")
         @Tag("todos")
         @Test
         @Description("Deve validar o schema json de um usuário utilizando o ID")
-        public void deveValidarSchemaUsuarioUtilizandoId() throws Exception {
+        public void deveValidarSchemaUsuarioUtilizandoId() {
                 String idUsuario = usuarios.getIdPrimeiroUsuario();
                 Response response = usuarios.buscarPorId(idUsuario)
                                 .then()
                                 .log().ifValidationFails()
-                                .statusCode(HttpStatus.SC_OK)
-                                .body(matchesJsonSchemaInClasspath("schemas/users/user.json"))
                                 .extract()
                                 .response();
-
                 logResponseData(response);
-                ;
+
+                response.then()
+                                .statusCode(HttpStatus.SC_OK)
+                                .body(matchesJsonSchemaInClasspath("schemas/users/user.json"));
         }
 }

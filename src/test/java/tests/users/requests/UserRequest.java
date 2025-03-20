@@ -1,13 +1,9 @@
 package tests.users.requests;
 
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import io.restassured.specification.FilterableRequestSpecification;
-import io.restassured.specification.RequestSpecification;
 import payloads.users.UsersPayload;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.reset;
 import static utils.RestAssuredAllureLogger.logRequestData;
 
 import org.apache.http.HttpStatus;
@@ -20,9 +16,13 @@ public class UserRequest {
 
     @Step("Listar usuários cadastrados")
     public Response listar() {
-        return  given()
+        return given()
                 .header("accept", "application/json")
                 .header("Content-Type", "application/json")
+                .filter((requestSpec, responseSpec, ctx) -> {
+                    logRequestData(requestSpec);
+                    return ctx.next(requestSpec, responseSpec);
+                })
                 .when()
                 .get(PATH_USUARIOS);
     }
@@ -33,11 +33,14 @@ public class UserRequest {
                 .header("accept", "application/json")
                 .header("Content-Type", "application/json")
                 .log().body()
+                .filter((requestSpec, responseSpec, ctx) -> {
+                    logRequestData(requestSpec);
+                    return ctx.next(requestSpec, responseSpec);
+                })
                 .when()
                 .queryParam(queryParam, valueParam)
                 .get(PATH_USUARIOS);
     }
-
 
     @Step("Buscar usuário por ID")
     public Response buscarPorId(String id) {
@@ -45,6 +48,10 @@ public class UserRequest {
                 .header("accept", "application/json")
                 .header("Content-Type", "application/json")
                 .when()
+                .filter((requestSpec, responseSpec, ctx) -> {
+                    logRequestData(requestSpec);
+                    return ctx.next(requestSpec, responseSpec);
+                })
                 .pathParam("_id", id)
                 .get(PATH_USUARIOS + "/{_id}");
     }
@@ -54,8 +61,12 @@ public class UserRequest {
         return given()
                 .header("accept", "application/json")
                 .header("Content-Type", "application/json")
-                .when()
                 .body(UsersPayload.toJson(administrador))
+                .filter((requestSpec, responseSpec, ctx) -> {
+                    logRequestData(requestSpec);
+                    return ctx.next(requestSpec, responseSpec);
+                })
+                .when()
                 .post(PATH_USUARIOS);
     }
 
@@ -64,6 +75,10 @@ public class UserRequest {
         return given()
                 .header("accept", "application/json")
                 .header("Content-Type", "application/json")
+                .filter((requestSpec, responseSpec, ctx) -> {
+                    logRequestData(requestSpec);
+                    return ctx.next(requestSpec, responseSpec);
+                })
                 .when()
                 .body(UsersPayload.toJson(nome, email, password, administrador))
                 .post(PATH_USUARIOS);
@@ -74,6 +89,10 @@ public class UserRequest {
         return given()
                 .header("accept", "application/json")
                 .header("Content-Type", "application/json")
+                .filter((requestSpec, responseSpec, ctx) -> {
+                    logRequestData(requestSpec);
+                    return ctx.next(requestSpec, responseSpec);
+                })
                 .when()
                 .pathParam("_id", id)
                 .delete(PATH_USUARIOS + "/{_id}");
@@ -84,6 +103,10 @@ public class UserRequest {
         return given()
                 .header("accept", "application/json")
                 .header("Content-Type", "application/json")
+                .filter((requestSpec, responseSpec, ctx) -> {
+                    logRequestData(requestSpec);
+                    return ctx.next(requestSpec, responseSpec);
+                })
                 .when()
                 .body(UsersPayload.toJson(nome, email, password, administrador))
                 .pathParam("_id", id)

@@ -4,17 +4,16 @@ import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import io.restassured.specification.FilterableRequestSpecification;
-import io.restassured.specification.RequestSpecification;
 
 public class RestAssuredAllureLogger {
 
     @Step("Logar Request Data")
     public static void logRequestData(FilterableRequestSpecification request) {
-        Allure.addAttachment("Request Method", "text/plain", request.getMethod());
-        Allure.addAttachment("Request URL", "text/plain", request.getURI());
+        // VER AQUI SE TEM ALGO QUE PODE ESTAR GERANDO AQUELE LOG A MAIS NO ALLURE.
+        Allure.addAttachment("Request", "text/plain", request.getMethod() + ": " + request.getURI());
         Allure.addAttachment("Request Headers", "text/plain", request.getHeaders().toString());
-        if (request.getBody() != null) {
-            Allure.addAttachment("Request Body", "text/plain", request.getBody().toString());
+        if (request.getBody() != null && !request.getBody().toString().isEmpty()) {
+            Allure.addAttachment("Request Body", "application/json", request.getBody().toString());
         }
     }
 
